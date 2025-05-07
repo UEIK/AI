@@ -1,0 +1,17 @@
+{
+    "player_score": 0,
+    "ai_score": 26,
+    "draws": 4,
+    "player1_score": 0,
+    "player2_score": 0,
+    "sound_enabled": true,
+    "player_name": "Player",
+    "player1_name": "Player 1",
+    "player2_name": "Player 2",
+    "leaderboard": [
+        {
+            "name": "Player",
+            "score": 7
+        }
+    ]
+}
