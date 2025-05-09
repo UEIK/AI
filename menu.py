@@ -49,7 +49,7 @@ class MenuSizeHuman:
         self.btnBatDau.update()
         self.btnQuayLai.update()
         font = pygame.font.SysFont('cambria', 30, bold=True)
-        DISPLAYSURF.blit(font.render('CHỌN KÍCH THƯỚC BẢNG', True, BABY_PINK), (240, 130))
+        DISPLAYSURF.blit(font.render('CHỌN KÍCH THƯỚC BẢNG', True, BABY_PINK), (200, 130))
 
     def action(self, event, play_game=None):
         global BOARD_SIZE
@@ -89,19 +89,29 @@ class GamingHuman:
         self.imgX = pygame.image.load('img/X.png')
         self.imgY = pygame.image.load('img/O.png')
         self.gameBg = pygame.image.load('img/tic-tac-toe.jpg')
-        self.btnReplay = Button(590, 570, 'CHƠI LẠI')
+        self.btnReplay = Button(600, 490, 'CHƠI LẠI')
         self.board_size = 3
         self.game_over = False
         self.current_player = 'X' 
         self.board = [['.' for _ in range(self.board_size)] for _ in range(self.board_size)]
 
+        self.win_sound = pygame.mixer.Sound("sound/win.wav")
+        self.win_sound.set_volume(0.6)
+        self.draw_sound = pygame.mixer.Sound("sound/draw.wav")
+        self.draw_sound.set_volume(0.6)
+        self.place_sound = pygame.mixer.Sound("sound/place.wav")
+        self.place_sound.set_volume(0.6)
+
+        self.win_playing = False
+        self.draw_playing = False
+
     def draw(self):
         DISPLAYSURF.fill(WHITE)
         DISPLAYSURF.blit(self.gameBg, (0, 50))
-        DISPLAYSURF.blit(FONT.render("Player 1: ", True, BLACK, WHITE), (500, 370))
-        DISPLAYSURF.blit(FONT.render("Player 2: ", True, BLACK, WHITE), (500, 450))
-        DISPLAYSURF.blit(pygame.transform.scale(pygame.image.load('img/X.png'), (70, 70)), (630, 340))
-        DISPLAYSURF.blit(pygame.transform.scale(pygame.image.load('img/O.png'),(70, 70)), (630, 420))
+        DISPLAYSURF.blit(FONT.render("Player 1: ", True, BLACK, WHITE), (500, 290))
+        DISPLAYSURF.blit(FONT.render("Player 2: ", True, BLACK, WHITE), (500, 370))
+        DISPLAYSURF.blit(pygame.transform.scale(pygame.image.load('img/X.png'), (70, 70)), (630, 260))
+        DISPLAYSURF.blit(pygame.transform.scale(pygame.image.load('img/O.png'),(70, 70)), (630, 340))
         DISPLAYSURF.blit(pygame.transform.scale(pygame.image.load('img/back.png'), (90, 90)), (10, 10))
         
         if self.board_size == 3:
@@ -137,11 +147,20 @@ class GamingHuman:
         if self.game_over:
             result = self.check_winner()
             if result == 'X':
-                DISPLAYSURF.blit(FONT.render("PLAYER 1 THẮNG", True, RED, WHITE), (320, 120))
+                DISPLAYSURF.blit(FONT.render("PLAYER 1 THẮNG", True, RED, WHITE), (270, 120))
+                pygame.mixer.music.stop()
+                self.win_sound.play(-1)
+                self.win_playing = True
             elif result == 'O':
-                DISPLAYSURF.blit(FONT.render("PLAYER 2 THẮNG", True, RED, WHITE), (320, 120))
+                DISPLAYSURF.blit(FONT.render("PLAYER 2 THẮNG", True, RED, WHITE), (270, 120))
+                pygame.mixer.music.stop()
+                self.win_sound.play(-1)
+                self.win_playing = True
             elif result == '.':
-                DISPLAYSURF.blit(FONT.render("      HÒA     ", True, RED, WHITE), (320, 1220))
+                DISPLAYSURF.blit(FONT.render("      HÒA     ", True, RED, WHITE), (310, 120))
+                pygame.mixer.music.stop()
+                self.draw_sound.play(-1)
+                self.draw_playing = True
 
             self.btnReplay.update()
 
@@ -150,9 +169,23 @@ class GamingHuman:
             x, y = pygame.mouse.get_pos()
 
             if self.game_over:
-                if 460 < x < 660 and 480 < y < 560:
+                if 500 < x < 700 and 450 < y < 530:
+                    self.win_sound.stop()
+                    self.draw_sound.stop()
+                    self.win_playing = False
+                    self.draw_playing = False
+                    pygame.mixer.music.play(loops=-1)
                     self.initialize_game()
                     return Screen.GAMINGHUMAN
+                if 10 < x < 100 and 10 < y < 100:
+                    self.win_sound.stop()
+                    self.draw_sound.stop()
+                    self.win_playing = False
+                    self.draw_playing = False
+                    pygame.mixer.music.play(loops=-1)
+                    self.initialize_game()
+                    self.game_over = False
+                return Screen.MENUSIZEHUMAN
                 return Screen.GAMINGHUMAN
             
             cell_size = 110 if self.board_size == 3 else 70
@@ -175,6 +208,11 @@ class GamingHuman:
                         return Screen.GAMINGHUMAN
 
             if 10 < x < 100 and 10 < y < 100:
+                self.win_sound.stop()
+                self.draw_sound.stop()
+                self.win_playing = False
+                self.draw_playing = False
+                pygame.mixer.music.play(loops=-1)
                 self.initialize_game()
                 self.game_over = False
                 return Screen.MENUSIZEHUMAN
@@ -205,21 +243,6 @@ class GamingHuman:
             return '.' 
 
         return None
-    
-    def update_score(self, result):
-        with open('game_data.json', 'r') as f:
-            data = json.load(f)
-
-        if result == 'X':
-            data['player_1'] += 1
-        elif result == 'O':
-            data['player_2'] += 1
-        elif result == '.':
-            data['draws'] += 1
-
-        with open('game_data.json', 'w') as f:
-            json.dump(data, f, indent=4)
-        return Screen.GAMINGHUMAN
  
 class MenuAI:
     def __init__(self):
@@ -275,7 +298,7 @@ class MenuAIgo:
         self.btnAlphaBeta = Button(545, 230, 'Alpha_Beta')
         self.btnBatDau = Button(360, 650, 'TIẾP')
         self.btnQuayLai = Button(360, 720, 'QUAY LẠI')
-        self.btnMinMax.set_selected(True)
+        self.btnAlphaBeta.set_selected(True)
 
     def drawMenuAlgo(self):
         DISPLAYSURF.blit(MENU_BG, (0, 0))
@@ -326,7 +349,7 @@ class MenuSize:
         self.btnBatDau.update()
         self.btnQuayLai.update()
         font = pygame.font.SysFont('cambria', 30, bold=True)
-        DISPLAYSURF.blit(font.render('CHỌN KÍCH THƯỚC BẢNG', True, BABY_PINK), (240, 130))
+        DISPLAYSURF.blit(font.render('CHỌN KÍCH THƯỚC BẢNG', True, BABY_PINK), (200, 130))
 
     def action(self, event, play_game, al_goes_first, use_alpha_beta):
         global BOARD_SIZE
@@ -381,19 +404,30 @@ class Gaming:
         self.alphaBeta = AlphaBeta(self.board_size)
         self.minMax = MinMax(self.board_size)
         self.game_over = False
-        self.current_algorithm = "Alpha Beta"  # Default algorithm
+        self.current_algorithm = "Alpha Beta"
+        self.btnReplay = Button(600, 510, 'CHƠI LẠI')
+
+        self.win_sound = pygame.mixer.Sound("sound/win.wav")
+        self.draw_sound = pygame.mixer.Sound("sound/draw.wav")
+        self.place_sound = pygame.mixer.Sound("sound/place.wav")
+        self.win_playing = False
+        self.draw_playing = False
+        
+
+        self.win_sound.set_volume(0.6)
+        self.draw_sound.set_volume(0.6)
+        self.place_sound.set_volume(0.6)
 
     def draw(self, txt):
-        PINK = (255, 204, 204)
         DISPLAYSURF.fill(WHITE)
         DISPLAYSURF.blit(self.gameBg, (0, 50))
         font = pygame.font.SysFont('cambria', 30, bold=True)
         DISPLAYSURF.blit(font.render(txt, True, PINK, WHITE), (150, 120))
         self.current_algorithm = txt  # Store the current algorithm name
-        DISPLAYSURF.blit(FONT.render("MÁY: ", True, BLACK, WHITE), (480, 400))
-        DISPLAYSURF.blit(FONT.render("NGƯỜI: ", True, BLACK, WHITE), (480, 480))
-        DISPLAYSURF.blit(pygame.transform.scale(pygame.image.load('img/O.png'), (70, 70)), (590, 380))
-        DISPLAYSURF.blit(pygame.transform.scale(pygame.image.load('img/X.png'), (70, 70)), (590, 450))
+        DISPLAYSURF.blit(FONT.render("MÁY: ", True, BLACK, WHITE), (500, 320))
+        DISPLAYSURF.blit(FONT.render("NGƯỜI: ", True, BLACK, WHITE), (500, 400))
+        DISPLAYSURF.blit(pygame.transform.scale(pygame.image.load('img/O.png'), (70, 70)), (630, 290))
+        DISPLAYSURF.blit(pygame.transform.scale(pygame.image.load('img/X.png'), (70, 70)), (630, 370))
         DISPLAYSURF.blit(pygame.transform.scale(pygame.image.load('img/back.png'), (90, 90)), (10, 10))
 
         if self.board_size == 3:
@@ -434,14 +468,21 @@ class Gaming:
             # Use the appropriate algorithm's result based on the current algorithm
             result = self.alphaBeta.result if is_alpha_beta else self.minMax.result
             if result == 'X':
-                pygame.draw.rect(DISPLAYSURF, WHITE, (480, 290, 250, 60))
-                DISPLAYSURF.blit(FONT.render("  NGƯỜI THẮNG", True, RED, WHITE), (500, 300))
+                DISPLAYSURF.blit(FONT.render("   NGƯỜI THẮNG", True, RED, WHITE), (490, 230))
+                pygame.mixer.music.stop()
+                self.win_sound.play(-1)
+                self.win_playing = True
             elif result == 'O':
-                pygame.draw.rect(DISPLAYSURF, WHITE, (480, 290, 250, 60))
-                DISPLAYSURF.blit(FONT.render("  MÁY THẮNG", True, RED, WHITE), (500, 300))
+                DISPLAYSURF.blit(FONT.render("   MÁY THẮNG", True, RED, WHITE), (490, 230))
+                pygame.mixer.music.stop()
+                self.win_sound.play(-1)
+                self.win_playing = True
             elif result == '.':
-                pygame.draw.rect(DISPLAYSURF, WHITE, (480, 290, 250, 60))
-                DISPLAYSURF.blit(FONT.render("     HÒA   ", True, RED, WHITE), (500, 300))
+                DISPLAYSURF.blit(FONT.render("      HÒA   ", True, RED, WHITE), (490, 230))
+                pygame.mixer.music.stop()
+                self.draw_sound.play(-1)
+                self.draw_playing = True
+            self.btnReplay.update()
 
     def Al_alpha_beta_play_first(self):
         self.alphaBeta.play_alpha_beta(ai_First=True, gaming=self)
@@ -461,7 +502,24 @@ class Gaming:
                 spacing = 80
 
             if self.game_over:
-                if 10 < x < 100 and 10 < y < 100:
+                if 500 < x < 700 and 470 < y < 550:
+                    self.win_sound.stop()
+                    self.draw_sound.stop()
+                    self.win_playing = False
+                    self.draw_playing = False
+                    pygame.mixer.music.play(loops=-1)
+                    self.place_sound.play()
+                    menuAlgo.drawMenuAlgo()
+                    self.alphaBeta.initialize_game()
+                    self.minMax.initialize_game()
+                    self.game_over = False
+                    return Screen.GAMING
+                elif 10 < x < 100 and 10 < y < 100:
+                    self.win_sound.stop()
+                    self.draw_sound.stop()
+                    self.win_playing = False
+                    self.draw_playing = False
+                    pygame.mixer.music.play(loops=-1)
                     menuAlgo.drawMenuAlgo()
                     self.alphaBeta.initialize_game()
                     self.minMax.initialize_game()
@@ -492,6 +550,7 @@ class Gaming:
                         return Screen.GAMING
 
             if 10 < x < 100 and 10 < y < 100:
+                pygame.mixer.music.play(loops=-1)
                 menuAlgo.drawMenuAlgo()
                 self.alphaBeta.initialize_game()
                 self.minMax.initialize_game()

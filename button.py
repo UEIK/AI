@@ -18,6 +18,7 @@ class Button():
     def checkForInput(self, position, event):
         if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):
             if event.type == pygame.MOUSEBUTTONDOWN:
+                pygame.mixer.Sound("sound/click.wav").play()
                 self.text = FONT.render(self.text_input, True, PINK)
                 return True
         else:

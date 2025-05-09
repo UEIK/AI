@@ -1,6 +1,12 @@
 from menu import *
 
+pygame.mixer.init(frequency=44100, size=-16, channels=2)
+
 pygame.init()
+
+pygame.mixer.music.load("sound/startup.wav")
+pygame.mixer.music.set_volume(0.6)
+pygame.mixer.music.play(loops=-1)
 
 if __name__ == '__main__':
     pygame.display.set_caption('Tic-Tac-Toe')

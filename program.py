@@ -29,5 +29,4 @@ BLUE  = (  0,   0, 255)
 PINK  = (255,  20, 147)
 BABY_PINK = (255, 195, 208)
 
-# Biến toàn cục để lưu kích thước bảng đã chọn
-BOARD_SIZE = 3  # Mặc định là 3x3
+BOARD_SIZE = 3 

@@ -306,6 +306,8 @@ class AlphaBeta(Algorithm):
             return
         (m, px, py) = self.max_alpha_beta(-2, 2)
         self.current_state[px][py] = 'O'
+        if gaming:
+            gaming.place_sound.play()
         self.player_turn = 'X'
         if self.check_winer(gaming):
             return
