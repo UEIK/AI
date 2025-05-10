@@ -126,10 +126,10 @@ class GamingHuman:
         scaled_imgY = pygame.transform.scale(self.imgY, (icon_size, icon_size))
 
         for i in range(self.board_size + 1):
-            pygame.draw.line(DISPLAYSURF, PINK,
+            pygame.draw.line(DISPLAYSURF, BABY_PINK,
                              (70, 220 + i * spacing),
                              (70 + self.board_size * spacing, 220 + i * spacing), 5)
-            pygame.draw.line(DISPLAYSURF, PINK,
+            pygame.draw.line(DISPLAYSURF, BABY_PINK,
                              (70 + i * spacing, 220),
                              (70 + i * spacing, 220 + self.board_size * spacing), 5)
 
@@ -442,10 +442,10 @@ class Gaming:
         scaled_imgY = pygame.transform.scale(self.imgY, (icon_size, icon_size))
 
         for i in range(self.board_size + 1):
-            pygame.draw.line(DISPLAYSURF, PINK,
+            pygame.draw.line(DISPLAYSURF, BABY_PINK,
                              (70, 220 + i * spacing),
                              (70 + self.board_size * spacing, 220 + i * spacing), 5)
-            pygame.draw.line(DISPLAYSURF, PINK,
+            pygame.draw.line(DISPLAYSURF, BABY_PINK,
                              (70 + i * spacing, 220),
                              (70 + i * spacing, 220 + self.board_size * spacing), 5)
 
