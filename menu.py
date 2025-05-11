@@ -468,17 +468,17 @@ class Gaming:
             # Use the appropriate algorithm's result based on the current algorithm
             result = self.alphaBeta.result if is_alpha_beta else self.minMax.result
             if result == 'X':
-                DISPLAYSURF.blit(FONT.render("   NGƯỜI THẮNG", True, RED, WHITE), (490, 230))
+                DISPLAYSURF.blit(FONT.render("  NGƯỜI THẮNG", True, RED, WHITE), (490, 230))
                 pygame.mixer.music.stop()
                 self.win_sound.play(-1)
                 self.win_playing = True
             elif result == 'O':
-                DISPLAYSURF.blit(FONT.render("   MÁY THẮNG", True, RED, WHITE), (490, 230))
+                DISPLAYSURF.blit(FONT.render("   MÁY THẮNG ", True, RED, WHITE), (490, 230))
                 pygame.mixer.music.stop()
                 self.win_sound.play(-1)
                 self.win_playing = True
             elif result == '.':
-                DISPLAYSURF.blit(FONT.render("      HÒA   ", True, RED, WHITE), (490, 230))
+                DISPLAYSURF.blit(FONT.render("     HÒA     ", True, RED, WHITE), (520, 230))
                 pygame.mixer.music.stop()
                 self.draw_sound.play(-1)
                 self.draw_playing = True

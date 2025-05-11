@@ -144,6 +144,7 @@ class MinMax(Algorithm):
         maxv = -2
         px = None
         py = None
+        best_depth = float('inf')
         result = self.is_end()
         if result == 'X':
             return (-1, 0, 0)
@@ -158,10 +159,11 @@ class MinMax(Algorithm):
                 if self.current_state[i][j] == '.':
                     self.current_state[i][j] = 'O'
                     (m, min_i, min_j) = self.min(depth + 1)
-                    if m > maxv:
+                    if m > maxv  or (m == maxv and depth < best_depth):
                         maxv = m
                         px = i
                         py = j
+                        best_depth = depth
                     self.current_state[i][j] = '.'
         return (maxv, px, py)
 
@@ -169,6 +171,7 @@ class MinMax(Algorithm):
         minv = 2
         qx = None
         qy = None
+        best_depth = float('inf')
         result = self.is_end()
         if result == 'X':
             return (-1, 0, 0)
@@ -183,10 +186,11 @@ class MinMax(Algorithm):
                 if self.current_state[i][j] == '.':
                     self.current_state[i][j] = 'X'
                     (m, max_i, max_j) = self.max(depth + 1)
-                    if m < minv:
+                    if m < minv  or (m == minv and depth < best_depth):
                         minv = m
                         qx = i
                         qy = j
+                        best_depth = depth
                     self.current_state[i][j] = '.'
         return (minv, qx, qy)
 
