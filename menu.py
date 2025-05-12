@@ -185,7 +185,7 @@ class GamingHuman:
                     pygame.mixer.music.play(loops=-1)
                     self.initialize_game()
                     self.game_over = False
-                return Screen.MENUSIZEHUMAN
+                    return Screen.MENUSIZEHUMAN
                 return Screen.GAMINGHUMAN
             
             cell_size = 110 if self.board_size == 3 else 70
